@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     if(argc == 2) {
         DArray *edges = newDArray(NULL);
         DArray *vertices = newDArray(NULL);
-        FILE *ifp = fopen(argv[1], "r");
+        FILE *ifp = fopen(argv[1], "r+");
         while(!feof(ifp)) {
             Edge* newEdge = malloc(sizeof(Edge));
             int tmp1, tmp2, weight = 1;
@@ -27,7 +27,6 @@ int main(int argc, char* argv[]) {
             tmp2 = readInt(ifp);
             insertDArray(vertices, temp1);
             insertDArray(vertices, temp2);
-            skipWhiteSpace(ifp);
             c = fgetc(ifp);
             if(c != 59) {
                 ungetc(c, ifp);

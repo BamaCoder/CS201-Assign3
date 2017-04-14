@@ -47,37 +47,32 @@ BinomialNode* newBinomialNode(void(*display)(FILE *, void *), void *value) {
     return n;
 }
 
-BinomialNode* combine(Binomial *b, BinomialNode*x, BinomialNode *y) {
+static BinomialNode* combine(Binomial *b, BinomialNode*x, BinomialNode *y) {
     int i = 0;
     if(b->compare(x->value, y->value) < 0) {
         i = sizeDArray(y->children);
         setDArray(x->children, i, y);
         y->parent = x;
-
         return x;
     }
     else {
         i = sizeDArray(x->children);
         setDArray(y->children, i, x);
         x->parent = y;
-
         return y;
     }
 }
 
-BinomialNode *getsubHeap(DArray *a, int degree) {
+BinomialNode *getTree(DArray *a, int degree) {
     if(degree == sizeDArray(a)) return 0;
-    else if(degree > sizeDArray(a)) {
-        fprintf(stderr, "Error in heap\n");
-        exit(-1);
-    }
     else return getDArray(a, degree);
 }
 
 static void consolidate(Binomial *b, BinomialNode *node) {
     int degree = sizeDArray(node->children);
-    while(getsubHeap(b->rootlist,degree) != 0) {
-        node = combine(b, node, getsubHeap(b->rootlist,degree));
+    BinomialNode *subtree;
+    while((subtree = getTree(b->rootlist,degree))) {
+        node = combine(b, node, subtree);
         setDArray(b->rootlist,degree,0);
         degree++;
     }
@@ -85,7 +80,7 @@ static void consolidate(Binomial *b, BinomialNode *node) {
 }
 
 static void merge(Binomial *b, DArray *donor) {
-    for (int i = 0, N = sizeDArray(donor); i < N; i++) {
+    for (int i = 0; i < sizeDArray(donor); i++) {
         BinomialNode* n = (BinomialNode*) getDArray(donor, i);
         n->parent = n;
         consolidate (b,n);
@@ -106,15 +101,23 @@ BinomialNode *insertBinomial(Binomial *b, void *value) {
 }
 
 BinomialNode *bubbleUp(Binomial *b, BinomialNode *n) {
-    void *tmp = 0;
     if(n->parent == n || b->compare(n->value, n->parent->value) > 0) return n;
     else {
         b->update(n->value,n->parent);
         b->update(n->parent->value, n);
-        tmp = n->value;
+        void *tmp = n->value;
         n->value = n->parent->value;
         n->parent->value = tmp;
         return bubbleUp(b, n->parent);
+    }
+}
+
+void findExtreme(Binomial *b) {
+    b->extreme = 0;
+    BinomialNode *n = 0;
+    for(int i = 0; i < sizeDArray(b->rootlist); i++) {
+        n = getTree(b->rootlist, i);
+        if(n != 0) updateExtreme(b,n);
     }
 }
 
@@ -124,22 +127,10 @@ void decreaseKeyBinomial(Binomial *b, BinomialNode *n, void* value) {
     updateExtreme(b, np);
 }
 
-void findExtreme(Binomial *b) {
-    b->extreme = 0;
-    BinomialNode *n = 0;
-    for(int i = 0; i < sizeDArray(b->rootlist); i++) {
-        n = getsubHeap(b->rootlist, i);
-        if(n != 0) updateExtreme(b,n);
-    }
-}
-
 void* extractBinomial(Binomial *b) {
     BinomialNode *n = b->extreme;
     for(int i = 0, N = sizeDArray(b->rootlist); i < N; i++) {
-        if((BinomialNode *)getDArray(b->rootlist, i) == n) {
-            setDArray(b->rootlist, i, 0);
-        }
-        i++;
+        if((BinomialNode *)getDArray(b->rootlist, i) == n)  setDArray(b->rootlist, i, 0);
     }
     merge(b, n->children);
     b->size--;
@@ -159,6 +150,7 @@ int sizeBinomial(Binomial *b) {
 }
 
 void displayBinomialNode(FILE *fp, BinomialNode *n) {
+    if(n == 0) return;
     n->display(fp, n->value);
     fprintf(fp, "-");
     fprintf(fp, "%d", sizeDArray(n->children));
@@ -183,9 +175,9 @@ void displayTree(FILE *fp, BinomialNode* n) {
             BinomialNode *node = peekQueue(q);
             displayBinomialNode(fp, node);
             dequeue(q);
-            if(sizeQueue(q) != 0 && peekQueue(q) != 0) fprintf(fp, " ");
+            if(i != sizeQueue(q)-1) fprintf(fp, " ");
             for(int j = 0; j < sizeDArray(node->children); j++) {
-                enqueue(q, (BinomialNode *) getsubHeap(node->children, j));
+                enqueue(q, getTree(node->children, j));
             }
         }
         fprintf(fp,"\n");
@@ -200,8 +192,8 @@ void displayBinomial(FILE *fp, Binomial *b) {
         return;
     }
     for(int i = 0; i < sizeDArray(b->rootlist); i++) {
-        BinomialNode* n = (BinomialNode *) getsubHeap(b->rootlist, i);
-        if(n != 0 && n->value != 0) displayTree(fp, n);
+        BinomialNode* n = getTree(b->rootlist, i);
+        if(n != 0) displayTree(fp, n);
     }
 }
 

@@ -16,21 +16,21 @@ test : $(PROJ_NAME)
 	gcc $(FLAGS) -o dtest dtest.c $(OBJS)
 	gcc $(FLAGS) -o bintest binomialtest.c $(OBJS)
 	gcc $(FLAGS) -o btest btest.c $(OBJS)
-	#./$(PROJ_NAME) assign3/single.0
-	#./$(PROJ_NAME) assign3/two.0
-	#./$(PROJ_NAME) assign3/unweighted.0
-	#./$(PROJ_NAME) assign3/g6.0
-	#./$(PROJ_NAME) assign3/g7.0
-	#./$(PROJ_NAME) assign3/g8.0
-	#./$(PROJ_NAME) assign3/g9.0
-	#./$(PROJ_NAME) assign3/g10.0
-	#./$(PROJ_NAME) assign3/g11.0
-	#./$(PROJ_NAME) assign3/g12.0
-	#./$(PROJ_NAME) assign3/g13.0
-	#./$(PROJ_NAME) assign3/g14.0
-	#./$(PROJ_NAME) assign3/g15.0
-	#./$(PROJ_NAME) assign3/g16.0
-	#./$(PROJ_NAME) assign3/g17.0
+	#./$(PROJ_NAME) single.0
+	#./$(PROJ_NAME) two.0
+	#./$(PROJ_NAME) unweighted.0
+	#./$(PROJ_NAME) g6.0
+	#./$(PROJ_NAME) g7.0
+	#./$(PROJ_NAME) g8.0
+	#./$(PROJ_NAME) g9.0
+	#./$(PROJ_NAME) g10.0
+	#./$(PROJ_NAME) g11.0
+	#./$(PROJ_NAME) g12.0
+	#./$(PROJ_NAME) g13.0
+	#./$(PROJ_NAME) g14.0
+	#./$(PROJ_NAME) g15.0
+	#./$(PROJ_NAME) g16.0
+	#./$(PROJ_NAME) g17.0
 	./dartest
 	./dtest 50 19 0
 	./bintest
