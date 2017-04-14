@@ -171,11 +171,13 @@ void displayTree(FILE *fp, BinomialNode* n) {
     while(sizeQueue(q)) {
         fprintf(fp, "%d: ", lev);
         lev++;
+        char* sep = "";
         for(int i = 0, n = sizeQueue(q); i < n; i++) {
             BinomialNode *node = peekQueue(q);
+            fprintf(fp, "%s", sep);
             displayBinomialNode(fp, node);
+            sep = " ";
             dequeue(q);
-            if(i != sizeQueue(q)-1) fprintf(fp, " ");
             for(int j = 0; j < sizeDArray(node->children); j++) {
                 enqueue(q, getTree(node->children, j));
             }
