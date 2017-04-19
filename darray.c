@@ -23,7 +23,7 @@ DArray *newDArray(void (*display) (FILE *, void *)) {
 }
 
 void doubleifFull(DArray *a, void* value) {
-    if(a->size >= a->capacity) {
+    while(a->size >= a->capacity) {
         a->capacity *= 2;
         a->array = realloc(a->array, sizeof(value) * a->capacity);
     }
