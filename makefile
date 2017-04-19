@@ -54,4 +54,4 @@ test : $(PROJ_NAME)
 	@echo Testing Sequence complete.
 
 clean :
-	rm $(OBJS) $(PROJ_NAME) bintest dartest
+	rm $(OBJS) $(PROJ_NAME) bintest dartest btest dtest *.txt
